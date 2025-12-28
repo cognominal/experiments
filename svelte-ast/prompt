@@ -1,0 +1,53 @@
+Instead I want a script that generate yaml with only relevant information. Leave out the start, end, loc keys, 
+Also as the comment of a node, the compiled string as a comment stripped to 50 chars.
+
+So we would get 
+
+operator: +=         # count += 1
+  left:              # count
+
+    type: Identifier 
+    name: count
+   right:             # 1
+     type: Litteral
+     raw: 1         
+
+instead of
+
+              "operator": "+=",
+                  "left": {
+                    "type": "Identifier",
+                    "start": 57,
+                    "end": 62,
+                    "loc": {
+                      "start": {
+                        "line": 6,
+                        "column": 4
+                      },
+                      "end": {
+                        "line": 6,
+                        "column": 9
+                      }
+                    },
+                    "name": "count"
+                  },
+                  "right": {
+                    "type": "Literal",
+                    "start": 66,
+                    "end": 67,
+                    "loc": {
+                      "start": {
+                        "line": 6,
+                        "column": 13
+                      },
+                      "end": {
+                        "line": 6,
+                        "column": 14
+                      }
+                    },
+                    "value": 1,
+                    "raw": "1"
+                  }
+                }
+            ]
+
