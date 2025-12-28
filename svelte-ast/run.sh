@@ -1,2 +1,2 @@
 
-node svelte-ast-tree.mjs c.svelte
+tsx svelte-ast-tree.ts c.svelte

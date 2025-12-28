@@ -1,0 +1,75 @@
+html: # <script> let count = 0; function increment() { ...
+  type: Fragment
+  children:
+    - type: Text
+      raw: "\n"
+      data: "\n"
+    - type: Text
+      raw: "\n\n"
+      data: "\n\n"
+    - type: Element # <button on:click={increment}> Clicked {count} t...
+      name: button
+      attributes:
+        - type: EventHandler # on:click={increment}
+          name: click
+          name_loc:
+            {}
+          expression: # increment
+            type: Identifier
+            name: increment
+          modifiers:
+            []
+      children:
+        - type: Text # Clicked
+          raw: "\n  Clicked "
+          data: "\n  Clicked "
+        - type: MustacheTag # {count}
+          expression: # count
+            type: Identifier
+            name: count
+        - type: Text # times
+          raw: " times\n"
+          data: " times\n"
+instance: # <script> let count = 0; function increment() { ...
+  type: Script
+  context: default
+  content: # let count = 0; function increment() { count += ...
+    type: Program
+    body:
+      - type: VariableDeclaration # let count = 0;
+        declarations:
+          - type: VariableDeclarator # count = 0
+            id: # count
+              type: Identifier
+              name: count
+            init: # 0
+              type: Literal
+              value: 0
+              raw: 0
+        kind: let
+      - type: FunctionDeclaration # function increment() { count += 1; }
+        id: # increment
+          type: Identifier
+          name: increment
+        expression: false
+        generator: false
+        async: false
+        params:
+          []
+        body: # { count += 1; }
+          type: BlockStatement
+          body:
+            - type: ExpressionStatement # count += 1;
+              expression: # count += 1
+                type: AssignmentExpression
+                operator: "+="
+                left: # count
+                  type: Identifier
+                  name: count
+                right: # 1
+                  type: Literal
+                  value: 1
+                  raw: 1
+    sourceType: module
+module: undefined
+css: undefined
