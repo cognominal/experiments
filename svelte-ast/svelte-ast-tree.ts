@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import chalk = require("chalk");
 import { parse } from "svelte/compiler";
 
 const filePath = process.argv[2];
@@ -41,6 +42,9 @@ const formatScalar = (value: unknown): string => {
   return String(value);
 };
 
+const formatComment = (comment: string | null): string =>
+  comment ? ` ${chalk.gray(`# ${comment}`)}` : "";
+
 const formatValue = (value: unknown, indent: number): string[] => {
   const pad = " ".repeat(indent);
 
@@ -50,13 +54,13 @@ const formatValue = (value: unknown, indent: number): string[] => {
       const comment = nodeComment(item);
       if (isObject(item) || Array.isArray(item)) {
         const lines = formatValue(item, indent + 2);
-        const first = `${pad}- ${lines[0].trimStart()}${
-          comment ? ` # ${comment}` : ""
-        }`;
+        const first = `${pad}- ${lines[0].trimStart()}${formatComment(
+          comment
+        )}`;
         return [first, ...lines.slice(1)];
       }
       const scalar = formatScalar(item);
-      return [`${pad}- ${scalar}${comment ? ` # ${comment}` : ""}`];
+      return [`${pad}- ${scalar}${formatComment(comment)}`];
     });
   }
 
@@ -68,7 +72,7 @@ const formatValue = (value: unknown, indent: number): string[] => {
       const child = value[key];
       if (isObject(child) || Array.isArray(child)) {
         const comment = nodeComment(child);
-        lines.push(`${pad}${key}:${comment ? ` # ${comment}` : ""}`);
+        lines.push(`${pad}${key}:${formatComment(comment)}`);
         lines.push(...formatValue(child, indent + 2));
       } else {
         lines.push(`${pad}${key}: ${formatScalar(child)}`);

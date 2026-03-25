@@ -1,5 +1,5 @@
 import readline from "node:readline";
-import { stat, readFile } from "node:fs/promises";
+import { stat, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
 import chalk from "chalk";
@@ -7,9 +7,14 @@ import chalk from "chalk";
 let commandIndex = 0;
 let previousResult: string | null = null;
 
-function formatCwd(cwd: string): string {
+function getHomeInfo() {
   const homeDir = os.homedir();
   const user = path.basename(homeDir);
+  return { homeDir, user };
+}
+
+function formatCwd(cwd: string): string {
+  const { homeDir, user } = getHomeInfo();
 
   if (cwd === homeDir) {
     return `~${user}`;
@@ -20,6 +25,60 @@ function formatCwd(cwd: string): string {
   }
 
   return cwd;
+}
+
+function looksLikePathStart(value: string): boolean {
+  return value.startsWith(".") || value.startsWith("/") || value.startsWith("~") || value.includes(path.sep);
+}
+
+function expandHome(value: string): string {
+  if (!value.startsWith("~")) {
+    return value;
+  }
+
+  const { homeDir, user } = getHomeInfo();
+  const prefix = `~${user}`;
+  if (value === "~" || value === prefix) {
+    return homeDir;
+  }
+
+  if (value.startsWith(prefix + path.sep)) {
+    return path.join(homeDir, value.slice(prefix.length + 1));
+  }
+
+  return value;
+}
+
+async function completePath(line: string): Promise<[string[], string]> {
+  const trimmed = line.trim();
+  if (trimmed.length === 0 || !looksLikePathStart(trimmed)) {
+    return [[], line];
+  }
+
+  const lastSlashIndex = trimmed.lastIndexOf(path.sep);
+  const originalDir = lastSlashIndex === -1 ? "" : trimmed.slice(0, lastSlashIndex + 1);
+  const prefix = lastSlashIndex === -1 ? trimmed : trimmed.slice(lastSlashIndex + 1);
+  let expandedDir = process.cwd();
+  if (lastSlashIndex >= 0) {
+    if (lastSlashIndex === 0) {
+      expandedDir = path.sep;
+    } else {
+      expandedDir = expandHome(trimmed.slice(0, lastSlashIndex)) || process.cwd();
+    }
+  }
+
+  try {
+    const entries = await readdir(expandedDir, { withFileTypes: true });
+    const matches = entries
+      .filter((entry) => entry.name.startsWith(prefix))
+      .map((entry) => {
+        const suffix = entry.isDirectory() ? path.sep : "";
+        return `${originalDir}${entry.name}${suffix}`;
+      });
+    return [matches, line];
+  } catch {
+    return [[], line];
+  }
 }
 
 function countLines(text: string): number {
@@ -83,6 +142,15 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
   terminal: true,
+  completer: (line: string, callback?: (err: Error | null, result: [string[], string]) => void) => {
+    if (callback) {
+      completePath(line)
+        .then((result) => callback(null, result))
+        .catch(() => callback(null, [[], line]));
+      return;
+    }
+    return completePath(line);
+  },
 });
 
 function prompt(): void {

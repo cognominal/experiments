@@ -1,0 +1,70 @@
+kind: Svelte
+tokenIdx: 0
+kids:
+  - kind: Svelte
+    type: Fragment
+    tokenIdx: 1
+    nameAsSon: html
+    kids:
+      - kind: Svelte
+        type: Element
+        tokenIdx: 2
+        nameAsSon: children
+        text: a
+        kids:
+          - kind: Svelte
+            type: Attribute
+            tokenIdx: 3
+            nameAsSon: attributes
+            kids:
+              - kind: Svelte
+                type: Text
+                tokenIdx: 4
+                nameAsSon: value
+                x: 7
+            x: 3
+          - kind: Svelte
+            type: Space
+            tokenIdx: 5
+            text: " "
+            x: 10
+          - kind: Svelte
+            type: Attribute
+            tokenIdx: 6
+            nameAsSon: attributes
+            kids:
+              - kind: Svelte
+                type: Text
+                tokenIdx: 7
+                nameAsSon: value
+                x: 18
+            x: 11
+          - kind: Svelte
+            type: Space
+            tokenIdx: 8
+            text: " "
+            x: 24
+          - kind: Svelte
+            type: Attribute
+            tokenIdx: 9
+            nameAsSon: attributes
+            kids:
+              - kind: Svelte
+                type: Text
+                tokenIdx: 10
+                nameAsSon: value
+                x: 31
+            x: 25
+          - kind: Svelte
+            type: Space
+            tokenIdx: 11
+            text: ">"
+            x: 50
+          - kind: Svelte
+            type: Text
+            tokenIdx: 12
+            nameAsSon: children
+            x: 51
+        x: 0
+    x: 0
+x: 0
