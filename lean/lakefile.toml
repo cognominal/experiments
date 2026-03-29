@@ -1,0 +1,6 @@
+name = "bool_expr_notes"
+version = "0.1.0"
+defaultTargets = ["BoolExprNotes"]
+
+[[lean_lib]]
+name = "BoolExprNotes"
